@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, cross_val_score
@@ -24,14 +24,25 @@ skf = StratifiedKFold(
     random_state=42
 )
 
-cv_scores = cross_val_score(model,X_train,y_train,cv=skf,scoring='roc_auc')
-print("AUC scores for each fold:", cv_scores)
-print("Mean AUC:", cv_scores.mean())
-print("Std Dev:", cv_scores.std())
+param_grid = {
+    'dt__max_depth': [None, 5, 10],
+    'dt__min_samples_split': [2, 5, 10],
+    'dt__min_samples_leaf': [1, 2, 4]
+}
 
-model.fit(X_train, y_train)
+grid = GridSearchCV(
+    estimator=model,
+    param_grid=param_grid,
+    scoring='roc_auc',
+    cv=skf,
+    n_jobs=-1
+)
+grid.fit(X_train, y_train)
+print("Best Params:", grid.best_params_)
+print("Best CV AUC:", grid.best_score_)
 
-y_pred = model.predict(X_test)
+best_model = grid.best_estimator_
+y_pred = best_model.predict(X_test)
 
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
