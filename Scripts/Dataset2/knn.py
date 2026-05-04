@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split,GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, cross_val_score
@@ -17,7 +17,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 model = Pipeline([
     ('smote', SMOTE(random_state=42)),
     ('scaler', StandardScaler()),
-    ('knn', KNeighborsClassifier(n_neighbors=5))
+    ('knn', KNeighborsClassifier())
 ])
 
 skf = StratifiedKFold(
@@ -26,16 +26,26 @@ skf = StratifiedKFold(
     random_state=42
 )
 
-cv_scores = cross_val_score(model,X_train,y_train,cv=skf,scoring='roc_auc')
-print("AUC scores for each fold:", cv_scores)
-print("Mean AUC:", cv_scores.mean())
-print("Std Dev:", cv_scores.std())
+param_grid = {
+    'knn__n_neighbors': [3, 5, 7],
+    'knn__weights': ['uniform', 'distance']
+}
+grid = GridSearchCV(
+    estimator=model,
+    param_grid=param_grid,
+    scoring='roc_auc',
+    cv=skf,
+    n_jobs=-1
+)
+grid.fit(X_train, y_train)
+print("Best Params:", grid.best_params_)
+print("Best CV AUC:", grid.best_score_)
 
-model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
+best_knn = grid.best_estimator_
+y_pred = best_knn.predict(X_test)
 
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
+
 
 
