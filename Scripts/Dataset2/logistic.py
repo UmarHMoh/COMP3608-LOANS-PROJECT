@@ -4,7 +4,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline
 
 df = pd.read_csv("data/Data/cleaned.csv")
 
@@ -13,7 +14,9 @@ y = df['Default']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42,stratify=y)
 
-model = Pipeline([('scaler', StandardScaler()),
+model = Pipeline([
+    ('smote', SMOTE(random_state=42)),
+    ('scaler', StandardScaler()),
     ('lr', LogisticRegression(max_iter=1000))
 ])
 
