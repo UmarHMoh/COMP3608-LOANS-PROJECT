@@ -1,0 +1,4 @@
+Model,Best Parameters,Best CV Recall,Test Accuracy,Test Precision,Test Recall,Test F1-score
+Logistic Regression,"{'lr__C': 0.01, 'lr__solver': 'lbfgs'}",0.6529,0.673,0.3617,0.6255,0.4583
+KNN,"{'knn__metric': 'euclidean', 'knn__n_neighbors': 11, 'knn__weights': 'uniform'}",0.653,0.6587,0.3516,0.6436,0.4547
+Decision Tree,"{'tree__criterion': 'gini', 'tree__max_depth': 3, 'tree__min_samples_leaf': 1, 'tree__min_samples_split': 2}",0.6014,0.7027,0.385,0.5765,0.4617
