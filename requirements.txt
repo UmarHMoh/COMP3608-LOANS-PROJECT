@@ -14,7 +14,7 @@ imbalanced-learn==0.11.0
 # Excel support for generating summary reports
 openpyxl==3.1.2
 
-# Visualization (if you add any plots)
+# Visualization
 matplotlib==3.7.2
 seaborn==0.12.2
 
