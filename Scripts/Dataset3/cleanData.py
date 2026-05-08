@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("../../Data/Raw Data/UCI_Credit_Card.csv")
+df = pd.read_csv("Data/Raw Data/UCI_Credit_Card.csv")
 
 df = df.rename(columns={"default.payment.next.month": "target"})
 
