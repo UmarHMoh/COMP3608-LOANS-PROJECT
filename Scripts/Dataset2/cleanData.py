@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-df = pd.read_csv("data/Data/Loan_prediction_default.csv")
+df = pd.read_csv("Data/Raw Data/Loan_prediction_default.csv")
 
 print(df.shape)
 print(df.isnull().sum().sum())
@@ -15,4 +15,4 @@ for col in cat_cols:
 
 df = df.drop('LoanID', axis=1)
 
-df.to_csv("data/Data/cleaned.csv", index=False)
+df.to_csv("cleaned_dataset2.csv", index=False)
