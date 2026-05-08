@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 
-df = pd.read_csv("data/Data/cleaned.csv")
+df = pd.read_csv("cleaned_dataset2.csv")
 
 X = df.drop('Default', axis=1)
 y = df['Default']
