@@ -7,7 +7,7 @@ from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-df = pd.read_csv("data/Data/cleaned.csv")
+df = pd.read_csv("cleaned_dataset2.csv")
 
 X = df.drop('Default', axis=1)
 y = df['Default']
