@@ -1,11 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split,GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("cleaned_dataset2.csv")
 
@@ -46,6 +47,24 @@ y_pred = best_knn.predict(X_test)
 
 print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
+
+y_probs = best_knn.predict_proba(X_test)[:, 1]
+
+fpr, tpr, thresholds = roc_curve(y_test, y_probs)
+
+auc_score = roc_auc_score(y_test, y_probs)
+
+# Plot ROC curve
+plt.figure(figsize=(6,6))
+plt.plot(fpr, tpr, label=f"KNN (AUC = {auc_score:.3f})")
+plt.plot([0,1], [0,1], linestyle='--')  # random classifier line
+
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve - KNN")
+plt.legend()
+
+plt.show()
 
 
 
