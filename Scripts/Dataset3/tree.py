@@ -2,10 +2,12 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score
 
 from imblearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
+
+import matplotlib.pyplot as plt
 
 
 df = pd.read_csv("cleaned_dataset3.csv")
@@ -55,3 +57,19 @@ print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 print()
 print(classification_report(y_test, y_pred))
+
+y_probs = grid.predict_proba(X_test)[:, 1]
+fpr, tpr, thresholds = roc_curve(y_test, y_probs)
+auc_score = roc_auc_score(y_test, y_probs)
+
+# Plot ROC curve
+plt.figure(figsize=(6,6))
+plt.plot(fpr, tpr, label=f"Decision Tree (AUC = {auc_score:.3f})")
+plt.plot([0,1], [0,1], linestyle='--')
+
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve - Decision Tree Dataset 3")
+plt.legend()
+
+plt.show()
