@@ -75,7 +75,7 @@ print(confusion_matrix(y_test, y_pred))
 print()
 print(classification_report(y_test, y_pred))
 
-y_probs = grid.predict_proba(X_test)[:, 1]
+y_probs = pipe.predict_proba(X_test)[:, 1]
 fpr, tpr, thresholds = roc_curve(y_test, y_probs)
 auc_score = roc_auc_score(y_test, y_probs)
 

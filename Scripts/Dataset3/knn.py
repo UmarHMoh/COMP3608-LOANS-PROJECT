@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearc
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, roc_auc_score
+from sklearn.model_selection import cross_val_score
 
 from imblearn.pipeline import Pipeline
 from imblearn.over_sampling import SMOTE
@@ -71,7 +72,7 @@ print()
 print(classification_report(y_test, y_pred))
 
 
-y_probs = grid.predict_proba(X_test)[:, 1]
+y_probs = pipe.predict_proba(X_test)[:, 1]
 fpr, tpr, thresholds = roc_curve(y_test, y_probs)
 auc_score = roc_auc_score(y_test, y_probs)
 
