@@ -23,36 +23,53 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
+from sklearn.model_selection import cross_val_score
+
 pipe = Pipeline([
     ("smote", SMOTE(random_state=42)),
-    ("tree", DecisionTreeClassifier(random_state=42))
+    ("tree", DecisionTreeClassifier(
+        criterion="gini",
+        max_depth=3,
+        min_samples_leaf=1,
+        min_samples_split=2,
+        random_state=42
+    ))
 ])
-
-params = {
-    "tree__max_depth": [3, 5, 7, 10, None],
-    "tree__min_samples_split": [2, 5, 10],
-    "tree__min_samples_leaf": [1, 2, 5],
-    "tree__criterion": ["gini", "entropy"]
-}
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-grid = GridSearchCV(
+cv_scores = cross_val_score(
     pipe,
-    params,
+    X_train,
+    y_train,
     cv=cv,
     scoring="recall",
     n_jobs=-1
 )
 
-grid.fit(X_train, y_train)
+cv_scores = cross_val_score(
+    pipe,
+    X_train,
+    y_train,
+    cv=cv,
+    scoring="recall",
+    n_jobs=-1
+)
 
-y_pred = grid.predict(X_test)
+pipe.fit(X_train, y_train)
+
+y_pred = pipe.predict(X_test)
 
 print("Decision Tree Results")
-print("Best Params:", grid.best_params_)
-print("Best CV Recall:", grid.best_score_)
+print("Best Params:", {
+    "tree__criterion": "gini",
+    "tree__max_depth": 3,
+    "tree__min_samples_leaf": 1,
+    "tree__min_samples_split": 2
+})
+print("Best CV Recall:", cv_scores.mean())
 print()
+
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 print()

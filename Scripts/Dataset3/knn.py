@@ -37,22 +37,33 @@ params = {
 }
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-
-grid = GridSearchCV(
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("smote", SMOTE(random_state=42)),
+    ("knn", KNeighborsClassifier(
+        n_neighbors=11,
+        weights="uniform",
+        metric="euclidean"
+    ))
+])
+cv_scores = cross_val_score(
     pipe,
-    params,
+    X_train,
+    y_train,
     cv=cv,
     scoring="recall",
     n_jobs=-1
 )
-
-grid.fit(X_train, y_train)
-
-y_pred = grid.predict(X_test)
+pipe.fit(X_train, y_train)
+y_pred = pipe.predict(X_test)
 
 print("KNN Results")
-print("Best Params:", grid.best_params_)
-print("Best CV Recall:", grid.best_score_)
+print("Best Params:", {
+    "knn__metric": "euclidean",
+    "knn__n_neighbors": 11,
+    "knn__weights": "uniform"
+})
+print("Best CV Recall:", cv_scores.mean())
 print()
 print("Confusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
